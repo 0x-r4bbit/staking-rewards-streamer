@@ -3,6 +3,7 @@ pragma solidity ^0.8.26;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { console } from "forge-std/Test.sol";
 
 // Rewards Streamer with Multiplier Points
 contract RewardsStreamerMP is ReentrancyGuard {
@@ -122,10 +123,15 @@ contract RewardsStreamerMP is ReentrancyGuard {
         user.stakedBalance -= amount;
         totalStaked -= amount;
 
+        console.log("previousStakedBalance: %d", previousStakedBalance);
+        console.log("amount: %d", amount);
+        console.log("SCALE_FACTOR: %d", SCALE_FACTOR);
         uint256 amountRatio = (amount * SCALE_FACTOR) / previousStakedBalance;
+        console.log("amountRatio: %d", amountRatio);
         uint256 mpToReduce = (user.userMP * amountRatio) / SCALE_FACTOR;
         uint256 potentialMPToReduce = (user.userPotentialMP * amountRatio) / SCALE_FACTOR;
 
+        console.log("mpToReduce: %d", mpToReduce);
         user.userMP -= mpToReduce;
         user.userPotentialMP -= potentialMPToReduce;
         totalMP -= mpToReduce;
